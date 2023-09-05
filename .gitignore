@@ -40,3 +40,8 @@ lerna-debug.log*
 Dockerfile
 docker-compose.yml
 .dockerignore
+
+
+#SSL
+key.pem
+cert.pem

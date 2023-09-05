@@ -7,13 +7,14 @@ import helmet from 'helmet';
 import * as morgan from 'morgan';
 import * as compression from 'compression';
 import * as fs from 'fs';
+import {join} from 'path';
 
 
 async function bootstrap() {
 
   const httpsOptions = {
-    key: fs.readFileSync('../key.pem'),
-    cert: fs.readFileSync('../cert.pem'),
+    key: fs.readFileSync(join(__dirname,'../key.pem')),
+    cert: fs.readFileSync(join(__dirname,'../cert.pem')),
   };
 
   const app = await NestFactory.create(AppModule,{

@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "F:/mp3/node-test"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"jest.disabledWorkspaceFolders": [
+			"node-test"
+		]
+	}
+}

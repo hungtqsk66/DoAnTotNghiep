@@ -23,7 +23,7 @@ async function bootstrap() {
   });
   const apiKeyService = app.get(ApiKeyService);
   app.use(helmet());
-  app.use(morgan('combined'));
+  app.use(morgan('combined',{stream:fs.createWriteStream(join(__dirname,'../logs/access.log'), {flags:'a'})}));
   app.use(compression());
   app.setGlobalPrefix('api');
   app.useGlobalGuards(new ApiEntryGuard(apiKeyService));

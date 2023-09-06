@@ -14,6 +14,9 @@ export class Song {
     @Prop({required:true,unique:true})
     file_name:string;
     
+    @Prop()
+    duration:number;
+
     @Prop({default:""})
     genre:string;
     

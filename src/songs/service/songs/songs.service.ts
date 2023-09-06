@@ -1,7 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Song } from 'src/songs/schemas/songs.schemas';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel, Schema } from '@nestjs/mongoose';
+import mongoose, { Model } from 'mongoose';
+import { Song, SongDocument } from 'src/songs/schemas/songs.schemas';
 import { SuccessResponse } from 'src/utils/dto/successResponse.dto';
 
 
@@ -10,7 +10,9 @@ export class SongsService {
     constructor(@InjectModel(Song.name) private readonly songDocument:Model<Song>){}
     
     async getSongById(id:string):Promise<SuccessResponse> {
-        return new SuccessResponse({metadata:await this.songDocument.findOne({_id:id}).lean()})
+        const song:SongDocument = await this.songDocument.findOne({_id:id}).lean()
+        if(!song) throw new NotFoundException(`Song not found`);
+        return new SuccessResponse({metadata:song})
     }
 
     async getSongsByPage(page:number):Promise<SuccessResponse> {

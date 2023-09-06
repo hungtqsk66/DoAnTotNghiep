@@ -2,6 +2,8 @@
 /dist
 /node_modules
 /audio
+/public
+/mongoDB
 
 # Logs
 logs

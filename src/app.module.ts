@@ -8,6 +8,9 @@ import { VerifyTokenMiddleware } from './auth/middleware/verify-token/verify-tok
 import { UserController } from './user/controllers/user/user.controller';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ResourcesModule } from './resources/resources.module';
+import { SongsModule } from './songs/songs.module';
+import { ArtistModule } from './artist/artist.module';
+import { AlbumModule } from './album/album.module';
 
 
 
@@ -21,6 +24,9 @@ import { ResourcesModule } from './resources/resources.module';
       rootPath: join(__dirname, '../public'),
       exclude: ['/api/(.*)'],
     }),
+    SongsModule,
+    ArtistModule,
+    AlbumModule,
   ],
   controllers: [],
   providers: [],

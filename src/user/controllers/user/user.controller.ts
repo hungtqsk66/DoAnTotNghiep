@@ -1,6 +1,6 @@
 import { Body, ClassSerializerInterceptor, Controller, Get, HttpCode, Post, Req, UseInterceptors } from '@nestjs/common';
 import { CreateUserDTO } from 'src/user/dto/createUser.dto';
-import { SuccessResponse} from 'src/user/dto/successResponse.dto';
+import { SuccessResponse} from 'src/utils/dto/successResponse.dto';
 import { UserLoginDTO } from 'src/user/dto/userLogin.dto';
 import { UserService } from 'src/user/service/user/user.service';
 import {Request} from 'express';

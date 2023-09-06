@@ -10,7 +10,7 @@ export class ResourcesController {
     @Get()
     getData(){
         console.log('working');
-        return "Resources";
+        return {metaData:"Resources"};
     }
 
     @Get('audio/:fileName')

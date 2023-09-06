@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/user/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
-import { SuccessResponse } from 'src/user/dto/successResponse.dto';
+import { SuccessResponse } from 'src/utils/dto/successResponse.dto';
 import { UserLoginDTO } from 'src/user/dto/userLogin.dto';
 import {randomBytes} from 'crypto';
 import { TokenPair, createTokenPair } from 'src/auth/middleware/verify-token/utils/token.handle';

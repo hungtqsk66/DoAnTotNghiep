@@ -28,6 +28,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.useGlobalGuards(new ApiEntryGuard(apiKeyService));
   app.useGlobalPipes(new ValidationPipe());
+  console.log(`Server running on port:3000`);
   await app.listen(3000);
 }
 bootstrap();

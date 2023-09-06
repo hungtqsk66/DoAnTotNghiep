@@ -12,16 +12,18 @@ import {join} from 'path';
 
 async function bootstrap() {
 
-  const httpsOptions = {
-    key: fs.readFileSync(join(__dirname,'../key.pem')),
-    cert: fs.readFileSync(join(__dirname,'../cert.pem')),
-  };
+
 
   const app = await NestFactory.create(AppModule,{
-    httpsOptions,
+
     logger: ['error', 'warn'],
   });
   const apiKeyService = app.get(ApiKeyService);
+  app.enableCors({
+    allowedHeaders: '*',
+    origin: '*',
+    credentials: true,
+  });
   app.use(helmet());
   app.use(morgan('combined',{stream:fs.createWriteStream(join(__dirname,'../logs/access.log'), {flags:'a'})}));
   app.use(compression());

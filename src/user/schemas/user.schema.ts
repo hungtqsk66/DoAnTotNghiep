@@ -17,7 +17,7 @@ export class User{
     @Prop({required: true,enum: ['active', 'inactive']})
     status:string;
 
-    @Prop({required: true,default:['Dev']})
+    @Prop({required: true,default:['User']})
     roles:string[]
 
     @Prop({required: true,default:true})

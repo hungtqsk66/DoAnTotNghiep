@@ -11,6 +11,7 @@ import { ResourcesModule } from './resources/resources.module';
 import { SongsModule } from './songs/songs.module';
 import { ArtistModule } from './artist/artist.module';
 import { AlbumModule } from './album/album.module';
+import { SearchModule } from './search/search.module';
 
 
 
@@ -27,6 +28,7 @@ import { AlbumModule } from './album/album.module';
     SongsModule,
     ArtistModule,
     AlbumModule,
+    SearchModule,
   ],
   controllers: [],
   providers: [],

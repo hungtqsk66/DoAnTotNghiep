@@ -4,10 +4,14 @@ import * as mongoose from 'mongoose';
 import { Album } from 'src/album/schemas/album.schemas';
 import { Artist } from 'src/artist/schemas/artist.schemas';
 
-export type SongDocument = HydratedDocument<Song>;
+
+
+
+
+type SongDocument = HydratedDocument<Song>;
 
 @Schema({collection:'Songs'})
-export class Song {
+class Song {
     @Prop({required:true})
     title:string;
 
@@ -46,9 +50,9 @@ export class Song {
     
     @Prop({default:"default.jpg"})
     coverArt:string
-    
-    
 
 }
 
-export const SongSchema = SchemaFactory.createForClass(Song)
+const SongSchema = SchemaFactory.createForClass(Song);
+
+export  {SongSchema , Song, SongDocument}

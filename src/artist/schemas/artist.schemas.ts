@@ -8,11 +8,9 @@ export type ArtistDocument = HydratedDocument<Artist>;
 
 @Schema({collection: 'Artists'})
 export class Artist {
+    
     @Prop({required: true,default:"Unknown"})
     artistName:string;
-
-    @Prop({required: true,default:""})
-    artistBio:string;
 
     @Prop({type:[mongoose.Schema.Types.ObjectId],ref:"Songs",default:[]})
     featuredSongs:Song[]

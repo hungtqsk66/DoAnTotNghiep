@@ -21,8 +21,8 @@ export class KeyTokenService {
         const 
                 filter = {user:userId}, 
                 update = {
-                        publicKey,privateKey,
-                        refreshToken,refreshTokensUsed: []
+                    publicKey,privateKey,
+                    refreshToken,refreshTokensUsed: []
                 }, options = {upsert:true,new:true};
 
         await this.keyTokenModel.findOneAndUpdate(filter,update, options);

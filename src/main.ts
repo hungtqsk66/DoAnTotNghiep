@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ApiEntryGuard } from './guard/api-entry.guard';
 import { ApiKeyService } from './api-key/service/api-key.service';
@@ -28,7 +28,7 @@ async function bootstrap() {
   app.use(morgan('combined',{stream:fs.createWriteStream(join(__dirname,'../logs/access.log'), {flags:'a'})}));
   app.use(compression());
   app.setGlobalPrefix('api');
-  app.useGlobalGuards(new ApiEntryGuard(apiKeyService));
+  app.useGlobalGuards(new ApiEntryGuard(apiKeyService, new Reflector()));
   app.useGlobalPipes(new ValidationPipe());
   console.log(`Server running on port:3000`);
   await app.listen(3000);

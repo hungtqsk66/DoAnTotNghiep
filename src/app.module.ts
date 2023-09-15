@@ -6,12 +6,13 @@ import { ApiKeyModule } from './api-key/api-key.module';
 import { KeyTokenModule } from './key-token/key-token.module';
 import { VerifyTokenMiddleware } from './auth/middleware/verify-token/verify-token.middleware';
 import { UserController } from './user/controllers/user/user.controller';
-import { ServeStaticModule } from '@nestjs/serve-static';
+import { ServeStaticModule } from '@nestjs/serve-static'; 
 import { ResourcesModule } from './resources/resources.module';
 import { SongsModule } from './songs/songs.module';
 import { ArtistModule } from './artist/artist.module';
 import { AlbumModule } from './album/album.module';
 import { SearchModule } from './search/search.module';
+
 
 
 
@@ -29,6 +30,7 @@ import { SearchModule } from './search/search.module';
     ArtistModule,
     AlbumModule,
     SearchModule,
+    
   ],
   controllers: [],
   providers: [],
@@ -45,6 +47,14 @@ export class AppModule implements NestModule {
       {
         path:'/user/signup',
         method:RequestMethod.POST
+      },
+      {
+        path:'/user/verifyChangePassword',
+        method:RequestMethod.POST
+      },
+      {
+        path:'/user/auth/(.*)',
+        method:RequestMethod.GET
       }
     )
     .forRoutes(UserController)

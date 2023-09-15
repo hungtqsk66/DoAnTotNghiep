@@ -2,6 +2,15 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "F:/mp3/node-test"
 		}
-	]
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "audio-server",
+		"jest.disabledWorkspaceFolders": [
+			"node-test"
+		]
+	}
 }

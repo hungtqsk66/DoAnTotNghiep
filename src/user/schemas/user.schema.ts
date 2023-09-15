@@ -8,13 +8,19 @@ export class User{
     @Prop({required: true})
     username: string;
 
-    @Prop({required: true})
+    @Prop({required: true,unique:true})
     email:string;
 
-    @Prop({required: true})
+    @Prop({required:true,enum:['Local','Google','Facebook'],default:'Local'})
+    provider:string;
+
+    @Prop({default:""})
     password:string;
 
-    @Prop({required: true,enum: ['active', 'inactive']})
+    @Prop({default:""})
+    profile_picture:string;
+
+    @Prop({required: true,enum: ['active', 'inactive'],default:'active'})
     status:string;
 
     @Prop({required: true,default:['User']})

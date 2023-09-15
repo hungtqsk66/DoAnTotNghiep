@@ -11,6 +11,7 @@ import { TokenPair, createTokenPair } from 'src/auth/middleware/verify-token/uti
 import { KeyTokenService } from 'src/key-token/service/key-token/key-token.service';
 import { KeyToken } from 'src/key-token/schemas/key-token.schema';
 import { UserJWTPayload } from 'src/auth/middleware/verify-token/verify-token.middleware';
+import { UserFromGoogle } from 'src/auth/google/service/google/google.service';
 
 
 @Injectable()
@@ -22,38 +23,48 @@ export class UserService {
 
     
     
-    async login (userPayLoad:UserLoginDTO):Promise<SuccessResponse> {
+    async login (userPayLoad: UserLoginDTO | UserFromGoogle):Promise<SuccessResponse> {
         
-        const foundUser:User = await this.userModel.findOne({username: userPayLoad.username}).lean();
+        let id:string , username:string = undefined;
         
-        if(!foundUser) throw new UnauthorizedException(`User not registered`);
+        if(userPayLoad instanceof UserLoginDTO){
         
-        const isPasswordMatch:boolean = await bcrypt.compare(userPayLoad.password, foundUser.password)
+            const foundUser:User = await this.userModel.findOne({username: userPayLoad.username}).lean();
         
-        if(!isPasswordMatch) throw new UnauthorizedException(`Incorrect password`);
+            if(!foundUser) throw new UnauthorizedException(`User not registered`);
         
+            const isPasswordMatch:boolean = await bcrypt.compare(userPayLoad.password, foundUser.password)
+        
+            if(!isPasswordMatch) throw new UnauthorizedException(`Incorrect password`);
+            
+            id = foundUser['_id'];
+            username = foundUser.username;
+    }
+    else{
+        id = userPayLoad._id;
+        username = userPayLoad.username;
+    }
         const [privateKey, publicKey] = await Promise.all([
             randomBytes(64).toString('hex'),
             randomBytes(64).toString('hex')
         ]);
-
         const tokens:TokenPair =  await createTokenPair(
             {
-                userId:foundUser['_id'], username:userPayLoad.username
+                userId:id, username:username
             },  publicKey,privateKey
         ); 
         
         await this.keyTokenService.createToken({
             refreshToken:tokens.refreshToken,
-            privateKey,publicKey,userId:foundUser['_id']
+            privateKey,publicKey,userId:id
         });
 
         
         return new SuccessResponse({
             metadata:{
                 user:{ 
-                    userId:foundUser['_id'].toString(),
-                    userName:foundUser['username']
+                    userId:id,
+                    userName:username
                 },
                 tokens
             }

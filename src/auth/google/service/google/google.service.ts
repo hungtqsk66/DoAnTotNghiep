@@ -18,7 +18,7 @@ export class GoogleService {
         if (!req['user']) throw new UnauthorizedException('User not registered');
         
         const {email,firstName,lastName,picture} : {email:string,firstName:string,lastName:string,picture?:string} = req['user'] as User_GooglePayload;
-        const username:string =  `${firstName}_${lastName}`;
+        const username:string =  `${firstName} ${lastName}`;
         const userInDB:User = await this.userModel.findOne({email}).lean();
         
         if(!userInDB){

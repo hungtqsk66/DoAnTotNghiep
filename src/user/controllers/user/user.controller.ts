@@ -2,7 +2,7 @@ import { CreateUserDTO } from 'src/user/dto/createUser.dto';
 import { SuccessResponse} from 'src/utils/dto/successResponse.dto';
 import { UserLoginDTO } from 'src/user/dto/userLogin.dto';
 import { UserService } from 'src/user/service/user/user.service';
-import { Request, NextFunction } from 'express';
+import { Request,Response, NextFunction } from 'express';
 import { UserJWTPayload } from 'src/auth/middleware/verify-token/verify-token.middleware';
 import { KeyToken } from 'src/key-token/schemas/key-token.schema';
 import { MailService } from 'src/mail/service/mail/mail.service';
@@ -10,8 +10,8 @@ import { GoogleService, UserFromGoogle } from 'src/auth/google/service/google/go
 import { AuthGuard } from '@nestjs/passport';
 import { 
     Body, ClassSerializerInterceptor, 
-    Controller, Get, HttpCode, Post, Req, 
-    UseGuards, UseInterceptors,SetMetadata 
+    Controller, Get, HttpCode, Post, Req, Res ,
+    UseGuards, UseInterceptors,SetMetadata
 } from '@nestjs/common';
 
 const AllowUnauthorizedRequest = () => SetMetadata('allowUnauthorizedRequest', true);
@@ -75,9 +75,11 @@ export class UserController {
     @Get('auth/googleRedirect')
     @AllowUnauthorizedRequest()
     @UseGuards(AuthGuard('google'))
-    async googleAuthRedirect(@Req() req:Request) {
+    async googleAuthRedirect(@Req() req:Request , @Res() res:Response) {
         const googleUser:UserFromGoogle = await this.googleService.googleLogin(req);
-        return this.userService.login(googleUser);
+        const id:string = await this.userService.login(googleUser) as string;
+        res.redirect(`http://localhost:3000/?id=${id}`);
+        
     }
 }
 

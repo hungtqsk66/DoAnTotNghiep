@@ -6,5 +6,4 @@ export class SuccessResponse{
         constructor(partial: Partial<SuccessResponse>) {
             Object.assign(this, partial);
         }
-    
 } 

@@ -23,7 +23,7 @@ export class UserService {
 
     
     
-    async login (userPayLoad: UserLoginDTO | UserFromGoogle):Promise<SuccessResponse> {
+    async login (userPayLoad: UserLoginDTO | UserFromGoogle):Promise<SuccessResponse | string> {
         
         let id:string , username:string = undefined;
         
@@ -58,9 +58,10 @@ export class UserService {
             refreshToken:tokens.refreshToken,
             privateKey,publicKey,userId:id
         });
-
         
-        return new SuccessResponse({
+
+
+        if(userPayLoad instanceof UserLoginDTO) return new SuccessResponse({
             metadata:{
                 user:{ 
                     userId:id,
@@ -69,8 +70,10 @@ export class UserService {
                 tokens
             }
         });
-    }
-    
+
+        return id;
+        
+}
 
     
     async signUp(userPayLoad:CreateUserDTO):Promise<SuccessResponse>{

@@ -7,6 +7,7 @@ import { UserJWTPayload } from 'src/auth/middleware/verify-token/verify-token.mi
 import { KeyToken } from 'src/key-token/schemas/key-token.schema';
 import { MailService } from 'src/mail/service/mail/mail.service';
 import { GoogleService, UserFromGoogle } from 'src/auth/google/service/google/google.service';
+import { config } from 'dotenv';
 import { AuthGuard } from '@nestjs/passport';
 import { 
     Body, ClassSerializerInterceptor, 
@@ -23,7 +24,7 @@ export class UserController {
         private userService: UserService,
         private mailService:MailService,
         private googleService:GoogleService
-    ){}
+    ){config()}
     
     @HttpCode(200)
     @Get()
@@ -68,7 +69,7 @@ export class UserController {
     @Get('auth/google')
     @AllowUnauthorizedRequest()
     @UseGuards(AuthGuard('google'))
-    googleAuth(@Req() req:Request,next:NextFunction){
+    googleAuth(next:NextFunction){
         return next();  
     }
 
@@ -77,9 +78,8 @@ export class UserController {
     @UseGuards(AuthGuard('google'))
     async googleAuthRedirect(@Req() req:Request , @Res() res:Response) {
         const googleUser:UserFromGoogle = await this.googleService.googleLogin(req);
-        const id:string = await this.userService.login(googleUser) as string;
-        res.redirect(`http://localhost:3000/?id=${id}`);
-        
+        const {userId,accessToken,refreshToken} = await this.userService.login(googleUser);
+        res.redirect(`${process.env.CLIENT_REDIRECT_URL}?userId=${userId}&accessToken=${accessToken}$refreshToken=${refreshToken}`);
     }
 }
 

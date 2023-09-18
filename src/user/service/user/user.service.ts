@@ -23,7 +23,7 @@ export class UserService {
 
     
     
-    async login (userPayLoad: UserLoginDTO | UserFromGoogle):Promise<SuccessResponse | string> {
+    async login (userPayLoad: UserLoginDTO | UserFromGoogle):Promise<SuccessResponse | any> {
         
         let id:string , username:string = undefined;
         
@@ -71,7 +71,7 @@ export class UserService {
             }
         });
 
-        return id;
+        return {userId:id,accessToken:tokens.accessToken,refreshToken:tokens.refreshToken};
         
 }
 

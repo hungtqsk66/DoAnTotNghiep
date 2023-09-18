@@ -16,6 +16,7 @@ import { SearchModule } from './search/search.module';
 
 
 
+
 @Module({
   imports: 
   [
@@ -30,8 +31,8 @@ import { SearchModule } from './search/search.module';
     ArtistModule,
     AlbumModule,
     SearchModule,
-    
-  ],
+
+],
   controllers: [],
   providers: [],
 })

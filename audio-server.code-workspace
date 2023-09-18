@@ -8,7 +8,7 @@
 		}
 	],
 	"settings": {
-		"liveServer.settings.multiRootWorkspaceName": "audio-server",
+		"liveServer.settings.multiRootWorkspaceName": "node-test",
 		"jest.disabledWorkspaceFolders": [
 			"node-test"
 		]

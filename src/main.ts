@@ -10,16 +10,14 @@ import { ApiEntryGuard } from './guard/api-entry.guard';
 import { ApiKeyService } from './api-key/service/api-key.service';
 
 
-
 async function bootstrap() {
 
-
-
-  const app = await NestFactory.create(AppModule,{
-
+  const app = await NestFactory.create(
+    AppModule,
+  {
     logger: ['error', 'warn'],
   });
-  const apiKeyService = app.get(ApiKeyService);
+  
   app.enableCors({
     allowedHeaders: '*',
     origin: '*',
@@ -28,11 +26,10 @@ async function bootstrap() {
   app.use(helmet());
   app.use(morgan('combined',{stream:fs.createWriteStream(join(__dirname,'../logs/access.log'), {flags:'a'})}));
   app.use(compression());
-
-  app.setGlobalPrefix('api');
-  app.useGlobalGuards(new ApiEntryGuard(new Reflector(),apiKeyService));
+  app.useGlobalGuards(new ApiEntryGuard(new Reflector(),app.get(ApiKeyService)));
   app.useGlobalPipes(new ValidationPipe());
+  app.setGlobalPrefix('api');
+  await app.listen(3000)
   console.log(`Server running on port:3000`);
-  await app.listen(3000);
 }
 bootstrap();

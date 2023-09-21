@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Request } from 'express';
+import { Request , Response} from 'express';
 import { User_GooglePayload } from '../../utils/google.strategy';
 import { User } from 'src/user/schemas/user.schema';
 
@@ -14,7 +14,7 @@ export interface UserFromGoogle {
 export class GoogleService {
     constructor( @InjectModel(User.name) private readonly userModel:Model<User>){}
     
-    async googleLogin(req:Request): Promise<UserFromGoogle>  {
+    async googleLogin(req:Request,res:Response): Promise<UserFromGoogle>  {
         if (!req['user']) throw new UnauthorizedException('User not registered');
         
         const {email,firstName,lastName,picture} : {email:string,firstName:string,lastName:string,picture?:string} = req['user'] as User_GooglePayload;
@@ -36,7 +36,12 @@ export class GoogleService {
         }
         const {provider} : {provider:string} = userInDB;
         
-        if(provider !== 'Google') throw new ConflictException('User already registered');
+        if(provider !== 'Google'){
+            const errorMessage:string = 'Conflict user'; 
+            res.redirect(`${process.env.CLIENT_REDIRECT_URL}/login/error?message=${errorMessage}`);
+            throw new ConflictException(errorMessage);
+            
+        };
         
         return {_id:userInDB['_id'],username:userInDB['username']}
         

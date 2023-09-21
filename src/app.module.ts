@@ -1,6 +1,7 @@
 import { join } from 'path';
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { ApiKeyModule } from './api-key/api-key.module';
 import { KeyTokenModule } from './key-token/key-token.module';
@@ -12,6 +13,8 @@ import { SongsModule } from './songs/songs.module';
 import { ArtistModule } from './artist/artist.module';
 import { AlbumModule } from './album/album.module';
 import { SearchModule } from './search/search.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { ResetTokenModule } from './reset-token/reset-token.module';
 
 
 
@@ -20,6 +23,7 @@ import { SearchModule } from './search/search.module';
 @Module({
   imports: 
   [
+    ConfigModule.forRoot(),
     MongooseModule.forRoot('mongodb://127.0.0.1:27017/audioServerDev'), 
     UserModule,ApiKeyModule, KeyTokenModule,
     ResourcesModule,
@@ -31,6 +35,21 @@ import { SearchModule } from './search/search.module';
     ArtistModule,
     AlbumModule,
     SearchModule,
+    MailerModule.forRoot({
+      transport: {
+        host: 'in-v3.mailjet.com',
+        port: 465,
+        auth: {
+          user: "09fcc6c44d2f55de47a6c199a7feb5ec",
+          pass: "1ac7713742062fdace7226cf272defca",
+        },
+      },
+      defaults: {
+        from: '"No Reply" <k26.audio@gmail.com>',
+      },
+      preview: true
+    }),
+    ResetTokenModule
 
 ],
   controllers: [],
@@ -51,6 +70,10 @@ export class AppModule implements NestModule {
       },
       {
         path:'/user/verifyChangePassword',
+        method:RequestMethod.POST
+      },
+      {
+        path:'/user/changePassword',
         method:RequestMethod.POST
       },
       {

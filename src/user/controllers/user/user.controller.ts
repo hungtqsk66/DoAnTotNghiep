@@ -1,19 +1,21 @@
+import { 
+    Body, ClassSerializerInterceptor, 
+    Controller, Get, HttpCode, Post, Req, Res ,
+    UseGuards, UseInterceptors,SetMetadata
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
+import { EmailDTO } from 'src/user/dto/email.dto';
 import { CreateUserDTO } from 'src/user/dto/createUser.dto';
 import { SuccessResponse} from 'src/utils/dto/successResponse.dto';
 import { UserLoginDTO } from 'src/user/dto/userLogin.dto';
 import { UserService } from 'src/user/service/user/user.service';
 import { Request,Response, NextFunction } from 'express';
 import { UserJWTPayload } from 'src/auth/middleware/verify-token/verify-token.middleware';
-import { KeyToken } from 'src/key-token/schemas/key-token.schema';
 import { MailService } from 'src/mail/service/mail/mail.service';
 import { GoogleService, UserFromGoogle } from 'src/auth/google/service/google/google.service';
-import { config } from 'dotenv';
-import { AuthGuard } from '@nestjs/passport';
-import { 
-    Body, ClassSerializerInterceptor, 
-    Controller, Get, HttpCode, Post, Req, Res ,
-    UseGuards, UseInterceptors,SetMetadata
-} from '@nestjs/common';
+import { ResetPasswordDTO } from 'src/user/dto/resetPassword.dto';
+import { RedirectURLObj } from 'src/user/utils/custom types/redirectURL';
 
 const AllowUnauthorizedRequest = () => SetMetadata('allowUnauthorizedRequest', true);
 
@@ -24,7 +26,7 @@ export class UserController {
         private userService: UserService,
         private mailService:MailService,
         private googleService:GoogleService
-    ){config()}
+    ){}
     
     @HttpCode(200)
     @Get()
@@ -50,21 +52,26 @@ export class UserController {
     @Post('logout') 
     handleLogout(@Req() req:Request ):Promise<SuccessResponse>
     { 
-        const {_id} = req['keyStore']; 
-        return this.userService.logout(_id);
+        return this.userService.logout(req['keyStore']._id);
     }
 
     @Get('refreshToken')
     refreshToken(@Req() req:Request)
     {
-        const [refreshToken,user,keyStore]:[string,UserJWTPayload,KeyToken] = [req['refreshToken'],req['user'] as UserJWTPayload,req['keyStore']];
-        return this.userService.refreshToken(keyStore,user,refreshToken);
+        return this.userService.refreshToken(req['keyStore'],req['user']as UserJWTPayload,req['refreshToken']);
+    }
+    @HttpCode(200)
+    @Post('verifyChangePassword')
+    sendEmailChangePassword(@Body() emailPayload:EmailDTO){
+        return this.mailService.sendVerifyChangePassword(emailPayload);
     }
 
-    // @Post('verifyChangePassword')
-    // sendEmailChangePassword(){
-    //     return this.mailService.sendVerifyChangePassword();
-    // }
+    @HttpCode(200)
+    @Post('changePassword')
+    changePassword(@Body() resetPasswordPayload:ResetPasswordDTO){
+        return this.userService.resetPassword(resetPasswordPayload);
+    }
+
 
     @Get('auth/google')
     @AllowUnauthorizedRequest()
@@ -77,9 +84,13 @@ export class UserController {
     @AllowUnauthorizedRequest()
     @UseGuards(AuthGuard('google'))
     async googleAuthRedirect(@Req() req:Request , @Res() res:Response) {
-        const googleUser:UserFromGoogle = await this.googleService.googleLogin(req);
-        const {userId,accessToken,refreshToken} = await this.userService.login(googleUser);
+        
+        const googleUser:UserFromGoogle = await this.googleService.googleLogin(req,res);
+        
+        const {userId,accessToken,refreshToken} = await this.userService.login(googleUser) as RedirectURLObj;
+        
         res.redirect(`${process.env.CLIENT_REDIRECT_URL}?userId=${userId}&accessToken=${accessToken}$refreshToken=${refreshToken}`);
+    
     }
 }
 

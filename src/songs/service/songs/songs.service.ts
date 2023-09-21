@@ -17,7 +17,7 @@ export class SongsService {
 
     async getSongsByPage(page:number):Promise<SuccessResponse> {
         if(page <= 0) throw new BadRequestException("page must be greater than 0");
-        const pageSize = 10;
+        const pageSize = 12;
         const skip = (page - 1) * pageSize;
 
         return new SuccessResponse({

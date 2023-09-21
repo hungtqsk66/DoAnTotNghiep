@@ -1,22 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
-
+import {ResetPasswordHTMLBody} from '../../utils/resetPWD.format';
+import { EmailDTO } from 'src/user/dto/email.dto';
+import { ResetTokenService } from 'src/reset-token/services/reset-token/reset-token.service';
+import { SuccessResponse } from 'src/utils/dto/successResponse.dto';
 
 @Injectable()
 export class MailService  {
-    constructor(private readonly mailerService: MailerService){}
+    constructor(
+      private readonly mailerService: MailerService,
+      private readonly resetTokenService:ResetTokenService
+    ){}
 
-    sendVerifyChangePassword():void{
-        this.mailerService.sendMail({
-        to: 'nguyenthanhhungso@gmail.com', // list of receivers
-        from: 'nguyenthanhhungso@gmail.com', // sender address
-        subject: 'Testing Nest MailerModule ✔', // Subject line
-        text: 'welcome', // plaintext body
-        html: '<b>welcome</b>', // HTML body content
+    async sendVerifyChangePassword(emailPayload:EmailDTO):Promise<SuccessResponse>{
+        
+      const {userId,resetToken} = await this.resetTokenService.generateResetToken(emailPayload.email);
+        
+      await this.mailerService.sendMail({
+        to: `${emailPayload.email}`,
+        from: 'k26.audio@gmail.com', 
+        subject: 'Verify password change',
+        html: ResetPasswordHTMLBody(userId,resetToken), // HTML body content
       });
-      console.log('Mail send , pls check');
+      return new SuccessResponse({message:`Mail sent to ${emailPayload.email}, pls check`});
     }
-
-   
 
 }

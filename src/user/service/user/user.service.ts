@@ -12,6 +12,11 @@ import { KeyTokenService } from 'src/key-token/service/key-token/key-token.servi
 import { KeyToken } from 'src/key-token/schemas/key-token.schema';
 import { UserJWTPayload } from 'src/auth/middleware/verify-token/verify-token.middleware';
 import { UserFromGoogle } from 'src/auth/google/service/google/google.service';
+import { ResetPasswordDTO } from 'src/user/dto/resetPassword.dto';
+import { ResetTokenService } from 'src/reset-token/services/reset-token/reset-token.service';
+import { validate } from 'class-validator';
+import { ResetTokenPayload } from 'src/reset-token/utils/reset-token.payload';
+import { RedirectURLObj } from 'src/user/utils/custom types/redirectURL';
 
 
 @Injectable()
@@ -19,38 +24,43 @@ export class UserService {
 
     constructor(
         @InjectModel(User.name) private readonly userModel:Model<User>,
-        @Inject(forwardRef(() => KeyTokenService)) private keyTokenService:KeyTokenService){}
-
+        @Inject(forwardRef(() => KeyTokenService)) private keyTokenService:KeyTokenService,
+        @Inject(forwardRef(() => ResetTokenService)) private resetTokenService:ResetTokenService
+        ){}
     
     
-    async login (userPayLoad: UserLoginDTO | UserFromGoogle):Promise<SuccessResponse | any> {
+    async login (userPayLoad: UserLoginDTO | UserFromGoogle):Promise<SuccessResponse | RedirectURLObj> {
         
-        let id:string , username:string = undefined;
+        let id:string , username:string;
         
-        if(userPayLoad instanceof UserLoginDTO){
+        const isUserLoginDTO:boolean = (await validate('UserLoginDTO',userPayLoad)).length === 0;
+        
+        if(isUserLoginDTO) {
         
             const foundUser:User = await this.userModel.findOne({username: userPayLoad.username}).lean();
         
             if(!foundUser) throw new UnauthorizedException(`User not registered`);
         
-            const isPasswordMatch:boolean = await bcrypt.compare(userPayLoad.password, foundUser.password)
+            const isPasswordMatch:boolean = await bcrypt.compare(userPayLoad['password'], foundUser.password);
         
             if(!isPasswordMatch) throw new UnauthorizedException(`Incorrect password`);
             
-            id = foundUser['_id'];
-            username = foundUser.username;
+            username = foundUser['username'];
+            id = foundUser['_id'].toString();
     }
-    else{
-        id = userPayLoad._id;
-        username = userPayLoad.username;
-    }
+        else{
+            id = userPayLoad['_id'];
+            username = userPayLoad.username;
+        }
+        
         const [privateKey, publicKey] = await Promise.all([
             randomBytes(64).toString('hex'),
             randomBytes(64).toString('hex')
         ]);
+        
         const tokens:TokenPair =  await createTokenPair(
             {
-                userId:id, username:username
+                userId:id, username
             },  publicKey,privateKey
         ); 
         
@@ -61,7 +71,7 @@ export class UserService {
         
 
 
-        if(userPayLoad instanceof UserLoginDTO) return new SuccessResponse({
+        if(isUserLoginDTO) return new SuccessResponse({
             metadata:{
                 user:{ 
                     userId:id,
@@ -101,8 +111,24 @@ export class UserService {
         
     }
 
+    async resetPassword(resetPWD_Payload:ResetPasswordDTO){
+        
+        const {userId,resetToken,password} = resetPWD_Payload;
+        
+        const decodedUser:ResetTokenPayload = await this.resetTokenService.verifyResetToken(userId,resetToken);
+        
+        await Promise.all([
+            this.resetTokenService.removeResetToken(userId),
+            this.userModel.findByIdAndUpdate({_id:decodedUser['userId']},{password:await bcrypt.hash(password,10)})
+        ]);
+        
+        return new SuccessResponse({message:"Password changed successfully"});
+    }
+
     async logout (keyStore:KeyToken):Promise<SuccessResponse> {
+        
         await this.keyTokenService.removeTokenById(keyStore['_id']);
+        
         return new SuccessResponse({message: 'Logged out successfully'});
     }
 
@@ -110,7 +136,13 @@ export class UserService {
         return new SuccessResponse({ metadata: await this.keyTokenService.modifyToken(keyStore,user,refreshToken)});
     }
 
-    async findUserByUserName(username:string):Promise<User> {
-        return await this.userModel.findOne({username:username}).lean();
+    async findUserByUserName(username:string,option:string=null):Promise<User> {
+        return await this.userModel.findOne({username:username},option).lean();
     }
+
+    async findUserByEmail(email:string,option:string=null):Promise<User>{
+        return await this.userModel.findOne({email:email},option).lean();
+    }
+
+
 }

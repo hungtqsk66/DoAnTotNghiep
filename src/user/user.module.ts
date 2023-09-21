@@ -10,6 +10,7 @@ import { MailModule } from 'src/mail/mail.module';
 import { GoogleService } from 'src/auth/google/service/google/google.service';
 import { GoogleStrategy } from 'src/auth/google/utils/google.strategy';
 import { AuthModule } from 'src/auth/auth.module';
+import { ResetTokenModule } from 'src/reset-token/reset-token.module';
 
 @Module({
   imports:[
@@ -24,6 +25,7 @@ import { AuthModule } from 'src/auth/auth.module';
     }
   ])
   ,forwardRef(() => KeyTokenModule)
+  ,forwardRef(()=>ResetTokenModule)
   ,MailModule,AuthModule  
 ],
   controllers: [UserController],

@@ -4,12 +4,9 @@ import { Model } from 'mongoose';
 import { Request , Response} from 'express';
 import { User_GooglePayload } from '../../utils/google.strategy';
 import { User } from 'src/user/schemas/user.schema';
+import { UserFromGoogle } from '../../utils/types/user.google.type';
 
-export interface UserFromGoogle {
-    _id:string;
-    username:string;
-    provider:string;
-}
+
 
 @Injectable()
 export class GoogleService {

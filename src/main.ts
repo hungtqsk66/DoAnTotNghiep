@@ -23,7 +23,7 @@ async function bootstrap() {
     origin: '*',
     credentials: true,
   });
-  app.use(helmet());
+  app.use(helmet( {crossOriginResourcePolicy: false}));
   app.use(morgan('combined',{stream:fs.createWriteStream(join(__dirname,'../logs/access.log'), {flags:'a'})}));
   app.use(compression());
   app.useGlobalGuards(new ApiEntryGuard(new Reflector(),app.get(ApiKeyService)));

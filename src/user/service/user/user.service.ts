@@ -16,7 +16,7 @@ import { ResetPasswordDTO } from 'src/user/dto/resetPassword.dto';
 import { ResetTokenService } from 'src/reset-token/services/reset-token/reset-token.service';
 import { validate } from 'class-validator';
 import { ResetTokenPayload } from 'src/reset-token/utils/reset-token.payload';
-import { RedirectURLObj } from 'src/user/utils/custom types/redirectURL';
+import { RedirectURLObj } from 'src/user/utils/custom types/redirectURL.type';
 
 
 @Injectable()

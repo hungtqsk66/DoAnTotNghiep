@@ -4,18 +4,19 @@ import {
     UseGuards, UseInterceptors,SetMetadata
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Request,Response, NextFunction } from 'express';
 
 import { EmailDTO } from 'src/user/dto/email.dto';
+import { UserService } from 'src/user/service/user/user.service';
+import { MailService } from 'src/mail/service/mail/mail.service';
+import { UserLoginDTO } from 'src/user/dto/userLogin.dto';
 import { CreateUserDTO } from 'src/user/dto/createUser.dto';
 import { SuccessResponse} from 'src/utils/dto/successResponse.dto';
-import { UserLoginDTO } from 'src/user/dto/userLogin.dto';
-import { UserService } from 'src/user/service/user/user.service';
-import { Request,Response, NextFunction } from 'express';
 import { UserJWTPayload } from 'src/auth/middleware/verify-token/verify-token.middleware';
-import { MailService } from 'src/mail/service/mail/mail.service';
-import { GoogleService, UserFromGoogle } from 'src/auth/google/service/google/google.service';
+import { RedirectURLObj } from 'src/user/utils/custom types/redirectURL.type';
 import { ResetPasswordDTO } from 'src/user/dto/resetPassword.dto';
-import { RedirectURLObj } from 'src/user/utils/custom types/redirectURL';
+import { GoogleService, UserFromGoogle } from 'src/auth/google/service/google/google.service';
+
 
 const AllowUnauthorizedRequest = () => SetMetadata('allowUnauthorizedRequest', true);
 
@@ -28,11 +29,6 @@ export class UserController {
         private googleService:GoogleService
     ){}
     
-    @HttpCode(200)
-    @Get()
-    getUsers(){
-        return ['user']
-    }
 
     @HttpCode(200)
     @Post('login') 

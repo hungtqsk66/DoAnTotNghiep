@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException, Req, Res, BadRequestException } from '@nestjs/common';
-import { Request,Response } from 'express';
 import * as fs from 'fs';
-
 import { join } from 'path';
+import { Stream } from 'stream';
+import { Request,Response } from 'express';
+import { Injectable, NotFoundException, Req, Res} from '@nestjs/common';
 
 @Injectable()
 export class ResourcesService {
@@ -10,36 +10,34 @@ export class ResourcesService {
         
         const filePath = join(__dirname,`../../../../audio/${fileName}`);
         if(fs.existsSync(filePath)) {
-            if(req.headers.range){
-                const stat = fs.statSync(filePath)
-            const fileSize = stat.size
-            const range = req.headers.range
-            const parts = range.replace(/bytes=/, "").split("-");
             
-            const start = parseInt(parts[0], 10)
-            /*in some cases end may not exists, if its
-            not exists make it end of file*/
-            const end = parts[1] ?parseInt(parts[1], 10) :fileSize - 1
-             
-            //chunk size is what the part of video we are sending.
-            const chunksize = (end - start) + 1
-            /*we can provide offset values as options to
-           the fs.createReadStream to read part of content*/
-            const file = fs.createReadStream(filePath, {start, end})
-             
-            const head = {
+            const 
+            
+            stat:fs.Stats = fs.statSync(filePath),
+            
+            fileSize:number = stat.size,
+            
+            range:string = req.headers.range,
+            parts = range.replace(/bytes=/, "").split("-"),
+            
+            start:number = parseInt(parts[0], 10),
+
+            end:number = parts[1] ?parseInt(parts[1], 10) :fileSize - 1,
+            
+            chunksize:number = (end - start) + 1,
+            
+            file:Stream = fs.createReadStream(filePath, {start, end}),
+            
+            head:any = {
                 'Content-Range': `bytes ${start}-${end}/${fileSize}`,
                 'Accept-Ranges': 'bytes',
                 'Content-Length': chunksize,
                 'Content-Type': 'audio/mpeg',
-            }
-            /*we should set status code as 206 which is
-                    for partial content*/
-            // because video is continuously fetched part by part
+            };
+            
             res.writeHead(206, head);
+            
             file.pipe(res);
-        }    
-            else res.sendFile(filePath);
         }
         else throw new NotFoundException('File not found');
     }

@@ -8,6 +8,7 @@ import { User } from 'src/user/schemas/user.schema';
 export interface UserFromGoogle {
     _id:string;
     username:string;
+    provider:string;
 }
 
 @Injectable()
@@ -32,7 +33,7 @@ export class GoogleService {
             await newGoogleUser.save();
             const _id:string = newGoogleUser._id.toString();
             
-            return {_id,username};
+            return {_id,username,provider:'Google'};
         }
         const {provider} : {provider:string} = userInDB;
         
@@ -43,7 +44,7 @@ export class GoogleService {
             
         };
         
-        return {_id:userInDB['_id'],username:userInDB['username']}
+        return {_id:userInDB['_id'],username:userInDB['username'],provider:userInDB.provider}
         
     }
 }

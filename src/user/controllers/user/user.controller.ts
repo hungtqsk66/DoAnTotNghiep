@@ -1,8 +1,8 @@
 import { 
-    Body, ClassSerializerInterceptor, 
-    Controller, Get, HttpCode, Post, Req, Res ,
-    UseGuards, UseInterceptors,SetMetadata
+    Body,Controller, Get, HttpCode, Post, Req, Res ,
+    UseGuards, UseInterceptors,ClassSerializerInterceptor,
 } from '@nestjs/common';
+
 import { AuthGuard } from '@nestjs/passport';
 import { Request,Response, NextFunction } from 'express';
 
@@ -13,12 +13,14 @@ import { UserLoginDTO } from 'src/user/dto/userLogin.dto';
 import { CreateUserDTO } from 'src/user/dto/createUser.dto';
 import { SuccessResponse} from 'src/utils/dto/successResponse.dto';
 import { UserJWTPayload } from 'src/auth/middleware/verify-token/verify-token.middleware';
-import { RedirectURLObj } from 'src/user/utils/custom types/redirectURL.type';
+import { RedirectURLObj } from 'src/user/utils/Types/redirectURL.type';
 import { ResetPasswordDTO } from 'src/user/dto/resetPassword.dto';
-import { GoogleService, UserFromGoogle } from 'src/auth/google/service/google/google.service';
+import { GoogleService} from 'src/auth/google/service/google/google.service';
+import { AllowUnauthorizedRequest } from 'src/auth/google/utils/excepts.guard';
+import { UserFromGoogle } from 'src/auth/google/utils/types/user.google.type';
 
 
-const AllowUnauthorizedRequest = () => SetMetadata('allowUnauthorizedRequest', true);
+
 
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)

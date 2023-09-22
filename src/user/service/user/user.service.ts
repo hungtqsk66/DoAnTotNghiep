@@ -11,12 +11,12 @@ import { TokenPair, createTokenPair } from 'src/auth/middleware/verify-token/uti
 import { KeyTokenService } from 'src/key-token/service/key-token/key-token.service';
 import { KeyToken } from 'src/key-token/schemas/key-token.schema';
 import { UserJWTPayload } from 'src/auth/middleware/verify-token/verify-token.middleware';
-import { UserFromGoogle } from 'src/auth/google/service/google/google.service';
 import { ResetPasswordDTO } from 'src/user/dto/resetPassword.dto';
 import { ResetTokenService } from 'src/reset-token/services/reset-token/reset-token.service';
 import { validate } from 'class-validator';
 import { ResetTokenPayload } from 'src/reset-token/utils/reset-token.payload';
-import { RedirectURLObj } from 'src/user/utils/custom types/redirectURL.type';
+import { RedirectURLObj } from 'src/user/utils/Types/redirectURL.type';
+import { UserFromGoogle } from 'src/auth/google/utils/types/user.google.type';
 
 
 @Injectable()
@@ -32,8 +32,8 @@ export class UserService {
     async login (userPayLoad: UserLoginDTO | UserFromGoogle):Promise<SuccessResponse | RedirectURLObj> {
         
         let id:string , username:string;
-        
-        const isUserLoginDTO:boolean = (await validate('UserLoginDTO',userPayLoad)).length === 0;
+       
+        const isUserLoginDTO:boolean = !userPayLoad.hasOwnProperty('provider') ;
         
         if(isUserLoginDTO) {
         

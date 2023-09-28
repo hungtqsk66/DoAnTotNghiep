@@ -10,14 +10,20 @@ export class SongsService {
     constructor(@InjectModel(Song.name) private readonly songDocument:Model<Song>){}
     
     async getSongById(id:string):Promise<SuccessResponse> {
+        
         const song:SongDocument = await this.songDocument.findOne({_id:id}).lean()
+        
         if(!song) throw new NotFoundException(`Song not found`);
+        
         return new SuccessResponse({metadata:song})
     }
 
     async getSongsByPage(page:number):Promise<SuccessResponse> {
+        
         if(page <= 0) throw new BadRequestException("page must be greater than 0");
+        
         const pageSize = 12;
+        
         const skip = (page - 1) * pageSize;
 
         return new SuccessResponse({

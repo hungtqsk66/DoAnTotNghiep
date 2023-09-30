@@ -6,7 +6,7 @@ import { SuccessResponse } from 'src/utils/dto/successResponse.dto';
 export class SearchController {
     constructor(private readonly searchService: SearchService){}
     @Get()
-    getData(@Query('keyword') keyword:string):Promise<SuccessResponse>{
-        return this.searchService.Search(keyword);
+    async getData(@Query('keyword') keyword:string):Promise<SuccessResponse>{
+        return await this.searchService.Search(keyword);
     }
 }

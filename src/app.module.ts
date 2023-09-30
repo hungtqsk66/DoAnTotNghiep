@@ -1,13 +1,12 @@
-import { join } from 'path';
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { RedisModule } from '@nestjs-modules/ioredis';
 import { UserModule } from './user/user.module';
 import { ApiKeyModule } from './api-key/api-key.module';
 import { KeyTokenModule } from './key-token/key-token.module';
 import { VerifyTokenMiddleware } from './auth/middleware/verify-token/verify-token.middleware';
-import { UserController } from './user/controllers/user/user.controller';
-import { ServeStaticModule } from '@nestjs/serve-static'; 
+import { UserController } from './user/controllers/user/user.controller'; 
 import { ResourcesModule } from './resources/resources.module';
 import { SongsModule } from './songs/songs.module';
 import { ArtistModule } from './artist/artist.module';
@@ -15,6 +14,7 @@ import { AlbumModule } from './album/album.module';
 import { SearchModule } from './search/search.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ResetTokenModule } from './reset-token/reset-token.module';
+import { SongViewsModule } from './song-views/song-views.module';
 
 
 
@@ -24,13 +24,14 @@ import { ResetTokenModule } from './reset-token/reset-token.module';
   imports: 
   [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/audioServerDev'), 
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/audioServerDev'),
+    RedisModule.forRoot({
+      config: { 
+        url: 'redis://localhost:6379',
+      },
+    }),
     UserModule,ApiKeyModule, KeyTokenModule,
     ResourcesModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../public'),
-      exclude: ['/api/(.*)'],
-    }),
     SongsModule,
     ArtistModule,
     AlbumModule,
@@ -49,7 +50,8 @@ import { ResetTokenModule } from './reset-token/reset-token.module';
       },
       preview: true
     }),
-    ResetTokenModule
+    ResetTokenModule,
+    SongViewsModule
 
 ],
   controllers: [],

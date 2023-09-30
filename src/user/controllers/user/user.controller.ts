@@ -34,40 +34,40 @@ export class UserController {
 
     @HttpCode(200)
     @Post('login') 
-    handleLogin(@Body() user:UserLoginDTO)
+    async handleLogin(@Body() user:UserLoginDTO)
     { 
-        return this.userService.login(user)
+        return await this.userService.login(user)
     }
 
     @HttpCode(201)
     @Post('signup') 
-    handleSignup(@Body() user:CreateUserDTO):Promise<SuccessResponse>
+    async handleSignup(@Body() user:CreateUserDTO):Promise<SuccessResponse>
     {
-        return this.userService.signUp(user);
+        return await this.userService.signUp(user);
     }
 
     @HttpCode(200)
     @Post('logout') 
-    handleLogout(@Req() req:Request ):Promise<SuccessResponse>
+    async handleLogout(@Req() req:Request ):Promise<SuccessResponse>
     { 
-        return this.userService.logout(req['keyStore']._id);
+        return await this.userService.logout(req['keyStore']._id);
     }
 
     @Get('refreshToken')
-    refreshToken(@Req() req:Request)
+    async refreshToken(@Req() req:Request)
     {
-        return this.userService.refreshToken(req['keyStore'],req['user']as UserJWTPayload,req['refreshToken']);
+        return await this.userService.refreshToken(req['keyStore'],req['user']as UserJWTPayload,req['refreshToken']);
     }
     @HttpCode(200)
     @Post('verifyChangePassword')
-    sendEmailChangePassword(@Body() emailPayload:EmailDTO){
-        return this.mailService.sendVerifyChangePassword(emailPayload);
+    async sendEmailChangePassword(@Body() emailPayload:EmailDTO){
+        return await this.mailService.sendVerifyChangePassword(emailPayload);
     }
 
     @HttpCode(200)
     @Post('changePassword')
-    changePassword(@Body() resetPasswordPayload:ResetPasswordDTO){
-        return this.userService.resetPassword(resetPasswordPayload);
+    async changePassword(@Body() resetPasswordPayload:ResetPasswordDTO){
+        return await this.userService.resetPassword(resetPasswordPayload);
     }
 
 
@@ -75,7 +75,7 @@ export class UserController {
     @AllowUnauthorizedRequest()
     @UseGuards(AuthGuard('google'))
     googleAuth(next:NextFunction){
-        return next();  
+        return  next();  
     }
 
     @Get('auth/googleRedirect')

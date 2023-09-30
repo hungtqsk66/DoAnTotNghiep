@@ -7,15 +7,14 @@ export class SongsController {
     constructor(private songService:SongsService){}
 
     @Get(':id')
-    getSongById(@Param('id') id:string):Promise<SuccessResponse>{
-        return this.songService.getSongById(id)
+    async getSongById(@Param('id') id:string):Promise<SuccessResponse>{
+        return await this.songService.getSongById(id)
     }
 
 
     @Get('page/:page')
-    getSongsByPage(@Param('page',ParseIntPipe)page:number):Promise<SuccessResponse>
-    {
-        return this.songService.getSongsByPage(page);
+    async getSongsByPage(@Param('page',ParseIntPipe)page:number):Promise<SuccessResponse>{
+        return await this.songService.getSongsByPage(page);
     }
 
 }

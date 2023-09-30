@@ -19,6 +19,13 @@ async function bootstrap() {
   const PORT:number = configService.get<number>('AUDIO_SERVER_PORT');
 
   app.use(helmet( {crossOriginResourcePolicy: false}));
+  app.enableCors(
+    {
+    allowedHeaders: '*',
+    origin: '*',
+    credentials: true,
+    }
+  )
   app.use(compression());
   app.useGlobalGuards(new ApiEntryGuard(new Reflector(),app.get(ApiKeyService)));
   app.setGlobalPrefix('api/audio-server');

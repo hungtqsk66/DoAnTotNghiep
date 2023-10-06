@@ -17,7 +17,7 @@ export class ResourcesService {
             
             fileSize:number = stat.size,
             
-            range:string = req.headers.range,
+            range:string = req.headers.range ?? `bytes=0-`,
             parts = range.replace(/bytes=/, "").split("-"),
             
             start:number = parseInt(parts[0], 10),

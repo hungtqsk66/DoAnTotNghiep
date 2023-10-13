@@ -15,6 +15,7 @@ import { SearchModule } from './search/search.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ResetTokenModule } from './reset-token/reset-token.module';
 import { SongViewsModule } from './song-views/song-views.module';
+import { SongViewsController } from './song-views/controller/song-views/song-views.controller';
 
 
 

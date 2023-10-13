@@ -43,19 +43,19 @@ export class VerifyTokenMiddleware implements NestMiddleware {
   
 async use(req: Request,res:Response, next: NextFunction) {
     
-    const userId:string = req.headers['x-client-id'].toString() ;
+    const userId:string = req.headers['x-client-id'] as string ;
     
     if(!userId) throw new UnauthorizedException(`Invalid request`);
     const keyStore:KeyToken = await this.keyTokenService.findByUserId(userId);
     
     //This is for refreshing tokens
     if(req.headers['x-r-token']){
-      const refreshToken:string = req.headers['x-r-token'].toString();
+      const refreshToken:string = req.headers['x-r-token'] as string;
       return  this.bindRequest(userId,refreshToken,KeyType.privateKey,keyStore,req,next);
     }
     
     //This is for other requests that need to interact with the user data
-    const accessToken:string = req.headers['authorization'].toString();
+    const accessToken:string = req.headers['authorization'] as string;
     return this.bindRequest(userId,accessToken,KeyType.publicKey,keyStore,req,next);
   }
   

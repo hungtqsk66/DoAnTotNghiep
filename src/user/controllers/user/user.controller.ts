@@ -85,9 +85,9 @@ export class UserController {
         
         const googleUser:UserFromGoogle = await this.googleService.googleLogin(req,res);
         
-        const {userId,accessToken,refreshToken} = await this.userService.login(googleUser) as RedirectURLObj;
+        const {userId,userName,accessToken,refreshToken} = await this.userService.login(googleUser) as RedirectURLObj;
         
-        res.redirect(`${process.env.CLIENT_REDIRECT_URL}?userId=${userId}&accessToken=${accessToken}$refreshToken=${refreshToken}`);
+        res.redirect(`${process.env.CLIENT_REDIRECT_URL}?userId=${userId}&userName=${userName}&accessToken=${accessToken}$refreshToken=${refreshToken}`);
     
     }
 }

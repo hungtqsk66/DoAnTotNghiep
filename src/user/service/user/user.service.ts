@@ -81,7 +81,12 @@ export class UserService {
             }
         });
 
-        return {userId:id,accessToken:tokens.accessToken,refreshToken:tokens.refreshToken};
+        return {
+                    userId:id,
+                    userName:username,
+                    accessToken:tokens.accessToken,
+                    refreshToken:tokens.refreshToken
+            };
         
 }
 

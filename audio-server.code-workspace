@@ -4,13 +4,27 @@
 			"path": "."
 		},
 		{
-			"path": "F:/mp3/node-test"
+			"path": "../proxy/API-Gateway"
+		},
+		{
+			"path": "../Automation"
+		},
+		{
+			"path": "../Fast-API"
+		},
+		{
+			"path": "../spotify-client"
 		}
 	],
 	"settings": {
-		"liveServer.settings.multiRootWorkspaceName": "audio-server",
+		"liveServer.settings.multiRootWorkspaceName": "Automation",
 		"jest.disabledWorkspaceFolders": [
-			"node-test"
+			"node-test",
+			"api-gateway",
+			"API-Gateway",
+			"Automation",
+			"Fast-API",
+			"spotify-client"
 		]
 	}
 }

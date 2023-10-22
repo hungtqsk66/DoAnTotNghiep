@@ -26,7 +26,7 @@ export class ResourcesService {
             
             chunksize:number = (end - start) + 1,
             
-            file:Stream = fs.createReadStream(filePath, {start, end}),
+            file:Stream = fs.createReadStream(filePath, {start, end,highWaterMark:512*1024}),
             
             head:any = {
                 'Content-Range': `bytes ${start}-${end}/${fileSize}`,

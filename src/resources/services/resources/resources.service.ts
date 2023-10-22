@@ -20,18 +20,19 @@ export class ResourcesService {
             range:string = req.headers.range ?? `bytes=0-`,
             parts = range.replace(/bytes=/, "").split("-"),
             
+            chunksize:number = 512 * 1024,
+            
             start:number = parseInt(parts[0], 10),
 
-            end:number = parts[1] ?parseInt(parts[1], 10) :fileSize - 1,
+            end:number = Math.min(start + chunksize, fileSize - 1),
             
-            chunksize:number = (end - start) + 1,
             
-            file:Stream = fs.createReadStream(filePath, {start, end,highWaterMark:512*1024}),
+            file:Stream = fs.createReadStream(filePath, {start, end}),
             
             head:any = {
                 'Content-Range': `bytes ${start}-${end}/${fileSize}`,
                 'Accept-Ranges': 'bytes',
-                'Content-Length': chunksize,
+                'Content-Length': end - start + 1,
                 'Content-Type': 'audio/mpeg',
             };
             

@@ -20,7 +20,7 @@ export class ResourcesService {
             range:string = req.headers.range ?? `bytes=0-`,
             parts = range.replace(/bytes=/, "").split("-"),
             
-            chunksize:number = 512 * 1024,
+            chunksize:number = 1000 * 1024,
             
             start:number = parseInt(parts[0], 10),
 

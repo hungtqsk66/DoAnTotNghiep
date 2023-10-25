@@ -36,7 +36,7 @@ export class GoogleService {
         
         if(provider !== 'Google'){
             const errorMessage:string = 'Conflict user'; 
-            res.redirect(`${process.env.CLIENT_REDIRECT_URL}/login/error?message=${errorMessage}`);
+            res.redirect(`${process.env.CLIENT_REDIRECT_URL}/login?error=${errorMessage}`);
             throw new ConflictException(errorMessage);
             
         };

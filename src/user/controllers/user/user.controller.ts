@@ -87,7 +87,7 @@ export class UserController {
         
         const {userId,userName,accessToken,refreshToken} = await this.userService.login(googleUser) as RedirectURLObj;
         
-        res.redirect(`${process.env.CLIENT_REDIRECT_URL}?userId=${userId}&userName=${userName}&accessToken=${accessToken}$refreshToken=${refreshToken}`);
+        res.redirect(`${process.env.CLIENT_REDIRECT_URL}?userId=${userId}&userName=${userName}&accessToken=${accessToken}&refreshToken=${refreshToken}`);
     
     }
 }

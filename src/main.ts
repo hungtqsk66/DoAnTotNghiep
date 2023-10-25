@@ -28,7 +28,7 @@ async function bootstrap() {
   )
   app.use(compression());
   app.useGlobalGuards(new ApiEntryGuard(new Reflector(),app.get(ApiKeyService)));
-  app.setGlobalPrefix('audio-server');
+  app.setGlobalPrefix('api/audio-server');
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(PORT);
   console.log(`Server running on port : ${PORT}`);

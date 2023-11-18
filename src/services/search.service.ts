@@ -11,18 +11,14 @@ export class SearchService implements ISearchService {
     constructor(@InjectModel(Song.name) private readonly songModel:  Model<Song> ){}
     
     async Search(searchText:string):Promise<SuccessResponse<Array<SongDocument>>>{
-        const search:string = searchText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-        
-        const regex:RegExp = new RegExp(search, 'gi');
         
         return new SuccessResponse({
-            metadata:await this.songModel.find({
-            $or:[
-                {title:{$regex: regex}},
-                {artist_name:{$regex: regex}},
-                {album:{$regex: regex}},
-            ]
-            }).limit(12).lean()
+            metadata:await this.songModel
+                    .find({$text:{$search:searchText}}, {score: {$meta: 'textScore'}})
+                    .sort({score: {$meta: 'textScore'}})
+                    .limit(12)
+                    .lean()
+                    
         })
     }
 }

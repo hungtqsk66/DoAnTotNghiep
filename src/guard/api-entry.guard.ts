@@ -1,8 +1,8 @@
 import {  CanActivate, ExecutionContext, Inject, Injectable} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
-import { ApiKey } from 'src/api-key/schemas/api-key.schema';
-import { ApiKeyService } from 'src/api-key/service/api-key.service';
+import { ApiKey } from 'src/schemas/api-key.schema';
+import { ApiKeyService } from 'src/services/api-key.service';
 
 
 @Injectable()

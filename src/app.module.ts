@@ -2,20 +2,21 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { RedisModule } from '@nestjs-modules/ioredis';
-import { UserModule } from './user/user.module';
-import { ApiKeyModule } from './api-key/api-key.module';
-import { KeyTokenModule } from './key-token/key-token.module';
+import { UserModule } from './modules/user.module';
+import { ApiKeyModule } from './modules/api-key.module';
+import { KeyTokenModule } from './modules/key-token.module';
 import { VerifyTokenMiddleware } from './auth/middleware/verify-token/verify-token.middleware';
-import { UserController } from './user/controllers/user/user.controller'; 
-import { ResourcesModule } from './resources/resources.module';
-import { SongsModule } from './songs/songs.module';
-import { ArtistModule } from './artist/artist.module';
-import { AlbumModule } from './album/album.module';
-import { SearchModule } from './search/search.module';
+import { UserController } from './controllers/user.controller'; 
+import { ResourcesModule } from './modules/resources.module';
+import { SongsModule } from './modules/songs.module';
+import { ArtistModule } from './modules/artist.module';
+import { AlbumModule } from './modules/album.module';
+import { SearchModule } from './modules/search.module';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { ResetTokenModule } from './reset-token/reset-token.module';
-import { SongViewsModule } from './song-views/song-views.module';
-import { SongViewsController } from './song-views/controller/song-views/song-views.controller';
+import { ResetTokenModule } from './modules/reset-token.module';
+import { SongViewsModule } from './modules/song-views.module';
+import { DbModule } from './db/db.module';
+import { UserPlaylistModule } from './modules/user-playlist.module';
 
 
 
@@ -52,7 +53,9 @@ import { SongViewsController } from './song-views/controller/song-views/song-vie
       preview: true
     }),
     ResetTokenModule,
-    SongViewsModule
+    SongViewsModule,
+    DbModule,
+    UserPlaylistModule
 
 ],
   controllers: [],

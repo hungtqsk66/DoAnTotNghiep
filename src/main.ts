@@ -1,19 +1,20 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import { AppModule } from './app.module';
 import { ApiEntryGuard } from './guard/api-entry.guard';
-import { ApiKeyService } from './api-key/service/api-key.service';
+import { ApiKeyService } from './services/api-key.service';
 import { ConfigService } from '@nestjs/config';
 
 
 async function bootstrap() {
   const app = await NestFactory.create(
     AppModule,
-  {
-    logger: ['error', 'warn'],
-  });
+    {
+      logger: ['error', 'warn'],
+    }
+);
   
   const configService = app.get(ConfigService);
   const PORT:number = configService.get<number>('AUDIO_SERVER_PORT');

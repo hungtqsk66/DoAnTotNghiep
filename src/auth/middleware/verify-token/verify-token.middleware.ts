@@ -1,8 +1,9 @@
 import * as JWT from 'jsonwebtoken';
 import { Request,Response,NextFunction } from 'express';
-import { KeyTokenService } from 'src/key-token/service/key-token/key-token.service';
-import { KeyToken } from 'src/key-token/schemas/key-token.schema';
+import { KeyTokenService } from 'src/services/key-token.service';
+import { KeyToken } from 'src/schemas/key-token.schema';
 import {Injectable,NestMiddleware,UnauthorizedException } from '@nestjs/common';
+import { UserJwtDTO } from 'src/Dtos/userJWT.dto';
 
 
 enum KeyType {
@@ -10,15 +11,13 @@ enum KeyType {
   privateKey = 'privateKey'
 }
 
-export interface UserJWTPayload extends JWT.JwtPayload{
-  userId: string,
-  username:string,
-}
+
 
 @Injectable()
 export class VerifyTokenMiddleware implements NestMiddleware {
   constructor(private readonly keyTokenService:KeyTokenService){}
 
+ 
  
 // This function bind payloads to the request
 
@@ -28,7 +27,7 @@ export class VerifyTokenMiddleware implements NestMiddleware {
     request:Request,next:NextFunction
   ) => {
 
-    const decodedUser:UserJWTPayload =  JWT.verify(verifyToken,keyStore[keyType]) as UserJWTPayload ;
+    const decodedUser:UserJwtDTO =  JWT.verify(verifyToken,keyStore[keyType]) as UserJwtDTO ;
     
     if(userId !== decodedUser?.userId) throw new UnauthorizedException(`Invalid user id`);
     
@@ -41,12 +40,12 @@ export class VerifyTokenMiddleware implements NestMiddleware {
     return next()
   }
   
-async use(req: Request,res:Response, next: NextFunction) {
+  async use(req: Request,res:Response, next: NextFunction) {
     
     const userId:string = req.headers['x-client-id'] as string ;
     
     if(!userId) throw new UnauthorizedException(`Invalid request`);
-    const keyStore:KeyToken = await this.keyTokenService.findByUserId(userId);
+    const keyStore:KeyToken = await this.keyTokenService.findTokenByUserId(userId);
     
     //This is for refreshing tokens
     if(req.headers['x-r-token']){

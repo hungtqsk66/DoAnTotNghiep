@@ -2,20 +2,23 @@ import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/co
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Request , Response} from 'express';
-import { User_GooglePayload } from '../../utils/google.strategy';
-import { User } from 'src/user/schemas/user.schema';
-import { UserFromGoogle } from '../../utils/types/user.google.type';
+import { User } from 'src/schemas/user.schema';
+import { UserFromGoogleDTO } from 'src/Dtos/userFromGoogle.dto';
+import { UserVerifiedDTO } from 'src/Dtos/verifiedUser.dto';
+import { IGoogleAuthService } from '../../interfaces/IGoogleAuthService';
+
 
 
 
 @Injectable()
-export class GoogleService {
+export class GoogleService implements IGoogleAuthService {
+    
     constructor( @InjectModel(User.name) private readonly userModel:Model<User>){}
     
-    async googleLogin(req:Request,res:Response): Promise<UserFromGoogle>  {
+    async googleLogin(req:Request,res:Response): Promise<UserVerifiedDTO>  {
         if (!req['user']) throw new UnauthorizedException('User not registered');
         
-        const {email,firstName,lastName,picture} : {email:string,firstName:string,lastName:string,picture?:string} = req['user'] as User_GooglePayload;
+        const {email,firstName,lastName,picture} : UserFromGoogleDTO = req['user'] as UserFromGoogleDTO;
         const username:string =  `${firstName} ${lastName}`;
         const userInDB:User = await this.userModel.findOne({email}).lean();
         
@@ -32,7 +35,7 @@ export class GoogleService {
             
             return {_id,username,provider:'Google'};
         }
-        const {provider} : {provider:string} = userInDB;
+        const provider : string = userInDB.provider;
         
         if(provider !== 'Google'){
             const errorMessage:string = 'Conflict user'; 

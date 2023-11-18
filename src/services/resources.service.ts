@@ -9,7 +9,7 @@ export class ResourcesService {
     
     async sendAudioFile(@Req() req:Request,@Res() res:Response ,fileName: string):Promise<void>{
         
-        const filePath = join(__dirname,`../../../../audio/${fileName}`);
+        const filePath = join(__dirname,`../../audio/${fileName}`);
         if(fs.existsSync(filePath)) {
             
             const 

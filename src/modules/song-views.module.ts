@@ -3,7 +3,7 @@ import { SongViewsController } from '../controllers/song-views.controller';
 import { SongViewService } from '../services/song-view.service';
 import { Song, SongSchema } from 'src/schemas/songs.schemas';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User_Item, User_Item_Schema } from 'src/schemas/user-items.schema';
+import { UserItems, UserItemSchema } from 'src/schemas/user-items.schema';
 
 @Module({
   imports:[
@@ -13,8 +13,8 @@ import { User_Item, User_Item_Schema } from 'src/schemas/user-items.schema';
         schema: SongSchema
       },
       {
-        name:User_Item.name,
-        schema:User_Item_Schema
+        name:UserItems.name,
+        schema:UserItemSchema
       }
     ])
   ],

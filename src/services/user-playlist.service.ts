@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { Request } from 'express';
 import { SuccessResponse } from 'src/Types/successResponse';
@@ -6,8 +7,9 @@ import { UserPlaylist, UserPlaylistDocument } from '../schemas/user-playlist.sch
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserPlayListDTO } from 'src/Dtos/userPlaylist.dto';
-import mongoose from 'mongoose';
 import { mapDocumentsIdToString } from 'src/utils/document_id.mapToString';
+import { UserItems } from 'src/schemas/user-items.schema';
+
 
 
 @Injectable()
@@ -15,7 +17,33 @@ export class UserPlaylistService implements IUserPlaylistService {
 
     constructor(
         @InjectModel(UserPlaylist.name) private readonly userPlaylistModel:Model<UserPlaylist>, 
+        @InjectModel(UserItems.name) private readonly userItemsModel:Model<UserItems>, 
     ) {}
+    
+    
+    async getUserRecentSongsPlaylists(req: Request): Promise<SuccessResponse<any>> 
+    {
+        
+        const userId:string = req.headers['x-client-id'] as string;
+        
+        const {records} = await this.userItemsModel.findOne(
+            {
+                _id:new mongoose.Types.ObjectId(userId)
+            }
+        ).populate('records.song_id').lean();
+
+        if(!records) throw new NotFoundException();
+
+        return new SuccessResponse({
+            message:"Success",
+            metadata:records.map(s=>
+                {
+                    s.song_id['_id'] = s.song_id['_id'].toString();
+                    return s.song_id
+                })       
+        });
+      
+    }
     
     async getUserPlaylists(userId: string): Promise<SuccessResponse<UserPlayListDTO>> 
     {
@@ -25,6 +53,8 @@ export class UserPlaylistService implements IUserPlaylistService {
                 user_id:new mongoose.Types.ObjectId(userId)
             }
         ).populate('playLists.songs').lean();
+        
+        if(!userPlaylist) throw new NotFoundException();
 
         const [...mappedPlaylists] = await Promise.all(
             userPlaylist.playLists.map(async doc=>(
@@ -147,5 +177,7 @@ export class UserPlaylistService implements IUserPlaylistService {
 
         return new SuccessResponse({message:`Removed song id: ${songId} to playlist : ${playList.playListName} successfully`});
     }
+
+    
 
 }

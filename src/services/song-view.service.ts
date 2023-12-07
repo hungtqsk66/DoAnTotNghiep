@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { UpdateViewDto } from 'src/Dtos/updateView.dto';
 import { Song } from 'src/schemas/songs.schemas';
-import { User_Item, User_Item_Document } from 'src/schemas/user-items.schema';
+import { UserItems, UserItemsDocument } from 'src/schemas/user-items.schema';
 import { ISongViewsService } from 'src/interfaces/ISongViewsService';
 
 
@@ -13,7 +13,7 @@ export class SongViewService implements ISongViewsService {
     
     constructor(
         @InjectModel(Song.name) private readonly songModel:Model<Song>,
-        @InjectModel(User_Item.name) private readonly userItem:Model<User_Item>
+        @InjectModel(UserItems.name) private readonly userItem:Model<UserItems>
     ) {}
 
     async updateSongViews(updateView:UpdateViewDto,req:Request):Promise<void>{
@@ -28,7 +28,7 @@ export class SongViewService implements ISongViewsService {
         
         if(not_userId) return ;
 
-        const userItemRecord:User_Item_Document = await this.userItem.findById(userId).lean();
+        const userItemRecord:UserItemsDocument = await this.userItem.findById(userId).lean();
         
         if(! userItemRecord) {
             await this.userItem.create({

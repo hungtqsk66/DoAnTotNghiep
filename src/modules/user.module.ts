@@ -16,6 +16,7 @@ import { UserPlaylistService } from 'src/services/user-playlist.service';
 import { UserPlaylist, UserPlaylistSchema } from '../schemas/user-playlist.schema';
 import { KeyTokenService } from 'src/services/key-token.service';
 import { DbModule } from 'src/db/db.module';
+import { UserItemSchema, UserItems } from 'src/schemas/user-items.schema';
 
 @Module({
   imports:[
@@ -31,6 +32,10 @@ import { DbModule } from 'src/db/db.module';
     {
       name:UserPlaylist.name,
       schema:UserPlaylistSchema
+    },
+    {
+      name:UserItems.name,
+      schema: UserItemSchema
     }
   ])
   ,KeyTokenModule

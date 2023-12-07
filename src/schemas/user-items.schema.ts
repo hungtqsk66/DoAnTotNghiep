@@ -1,16 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument} from 'mongoose';
+import { Song } from './songs.schemas';
 
-export type User_Item_Document = HydratedDocument<User_Item>;
+export type UserItemsDocument = HydratedDocument<UserItems>;
 
 
 @Schema({collection: 'Users-Items'})
-export class User_Item{
+export class UserItems{
     @Prop({
         type:[
             {
                 _id:false,
-                song_id:{type:mongoose.Schema.Types.ObjectId},
+                song_id:{type:mongoose.Schema.Types.ObjectId,ref:Song.name},
                 user_listen_counts:{ type:mongoose.Schema.Types.Number,required:true,default:0}
             }
         ]
@@ -22,4 +23,4 @@ export class User_Item{
     records:{song_id:Object,user_listen_counts:number}[] ;
 }
 
-export const User_Item_Schema = SchemaFactory.createForClass(User_Item);
+export const UserItemSchema = SchemaFactory.createForClass(UserItems);

@@ -72,7 +72,8 @@ export class UserController {
 
     @HttpCode(200)
     @Post('verifyChangePassword')
-    async sendEmailChangePassword(@Body() emailPayload:EmailDTO):Promise<SuccessResponse>{
+    async sendEmailChangePassword(@Body() emailPayload:EmailDTO):Promise<SuccessResponse>
+    {
         return await this.mailService.sendVerifyChangePassword(emailPayload);
     }
 
@@ -103,12 +104,20 @@ export class UserController {
     
     }
 
-    @Get('playLists')
     @HttpCode(200)
+    @Get('playLists')
     async getUserPlaylists(@Req()req:Request):Promise<SuccessResponse<UserPlayListDTO>>
     {
         return await this.userPlaylistService.getUserPlaylists(req.headers['x-client-id'] as string);
     }
+
+    @HttpCode(200)
+    @Get('playLists/recent')
+    async getUserRecentSongs(@Req()req:Request):Promise<SuccessResponse>
+    {
+        return await this.userPlaylistService.getUserRecentSongsPlaylists(req);
+    }
+
 
     @HttpCode(201)
     @Post('createPlaylist')
@@ -138,11 +147,6 @@ export class UserController {
     {
         return await this.userPlaylistService.removeSongFromPlaylist(playListId,songId,req);
     }
-
-
-
-
-
 }
 
 

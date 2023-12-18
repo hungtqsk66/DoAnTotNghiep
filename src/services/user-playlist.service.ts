@@ -1,12 +1,11 @@
-import mongoose from 'mongoose';
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { Request } from 'express';
+import  mongoose,{ Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 import { SuccessResponse } from 'src/Types/successResponse';
+import { UserPlayListDTO } from 'src/Dtos/userPlaylist.dto';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { IUserPlaylistService } from 'src/interfaces/IUserPlaylistService';
 import { UserPlaylist, UserPlaylistDocument } from '../schemas/user-playlist.schema';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
-import { UserPlayListDTO } from 'src/Dtos/userPlaylist.dto';
 import { mapDocumentsIdToString } from 'src/utils/document_id.mapToString';
 import { UserItems } from 'src/schemas/user-items.schema';
 
@@ -60,15 +59,11 @@ export class UserPlaylistService implements IUserPlaylistService {
             userPlaylist.playLists.map(async doc=>(
             {
                 ...doc,
-                _id:doc._id.toString(),
+                _id:doc._id.toString(),                           
                 songs:await mapDocumentsIdToString(doc.songs)
             })
         )
     );
-
-    
-          
-        
         const userPlaylistDTO:UserPlayListDTO = {
             _id:userPlaylist._id.toString(),
             user_id:userPlaylist.user_id.toString(),

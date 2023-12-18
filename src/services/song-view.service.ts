@@ -16,7 +16,8 @@ export class SongViewService implements ISongViewsService {
         @InjectModel(UserItems.name) private readonly userItem:Model<UserItems>
     ) {}
 
-    async updateSongViews(updateView:UpdateViewDto,req:Request):Promise<void>{
+    async updateSongViews(updateView:UpdateViewDto,req:Request):Promise<void>
+    {
         
         const userId:string = req.headers['x-client-id'] as string;
         
@@ -24,10 +25,13 @@ export class SongViewService implements ISongViewsService {
 
         await this.songModel.findOneAndUpdate({_id:song_id},{$inc:{views:1}});
 
-        const not_userId:boolean = (userId === null || userId === undefined || userId === '');
+        const no_userId:boolean = (userId === null || userId === undefined || userId === '');
         
-        if(not_userId) return ;
+        if(!no_userId) await this.updateUserSongViews(userId,song_id);
+    }
 
+    private async updateUserSongViews(userId:string,song_id:string):Promise<void>
+    {
         const userItemRecord:UserItemsDocument = await this.userItem.findById(userId).lean();
         
         if(! userItemRecord) {
@@ -46,18 +50,23 @@ export class SongViewService implements ISongViewsService {
 
         const records:{song_id:Object,user_listen_counts:number}[] = userItemRecord.records;
 
-        const song_record = records.find((element)=>element.song_id.toString() === song_id);
+        const index:number = records.findIndex((element)=>element.song_id.toString() === song_id);
 
-        if(!song_record) records.push( 
+        if(index < 0) records.push( 
             {
                 song_id,
                 user_listen_counts:1
             }
         );
 
-        else song_record.user_listen_counts += 1;
-
+        else 
+        {
+            records[index].user_listen_counts += 1;
+            records.unshift(records.splice(index, 1)[0]);
+        }
+        
+        if(records.length > 50) records.pop();
+        
         await this.userItem.findByIdAndUpdate(userId,{records});
-
     }
 }

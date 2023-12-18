@@ -52,7 +52,7 @@ export class SongViewService implements ISongViewsService {
 
         const index:number = records.findIndex((element)=>element.song_id.toString() === song_id);
 
-        if(index < 0) records.push( 
+        if(index < 0) records.unshift( 
             {
                 song_id,
                 user_listen_counts:1

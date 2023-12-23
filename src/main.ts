@@ -1,5 +1,5 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import { AppModule } from './app.module';
@@ -22,9 +22,9 @@ async function bootstrap() {
   app.use(helmet( {crossOriginResourcePolicy: false}));
   app.enableCors(
     {
-    allowedHeaders: '*',
-    origin: '*',
-    credentials: true,
+      allowedHeaders: '*',
+      origin: '*',
+      credentials: true,
     }
   )
   app.use(compression());

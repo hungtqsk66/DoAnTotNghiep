@@ -34,7 +34,8 @@ export class SongViewService implements ISongViewsService {
     {
         const userItemRecord:UserItemsDocument = await this.userItem.findById(userId).lean();
         
-        if(! userItemRecord) {
+        if(! userItemRecord) 
+        {
             await this.userItem.create({
                 _id:new mongoose.mongo.ObjectId(userId),
                 records:[

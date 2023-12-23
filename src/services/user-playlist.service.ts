@@ -83,19 +83,19 @@ export class UserPlaylistService implements IUserPlaylistService {
         const queryId:Object = new mongoose.Types.ObjectId(userId);
         
         await this.userPlaylistModel.findOneAndUpdate(
-        {
-            user_id:queryId
-        },
-        {
-            $push:{
-                playLists:{
-                    playListName,songs:[]
+            {
+                user_id:queryId
+            },
+            {
+                $push:{
+                    playLists:{
+                        playListName,songs:[]
+                    }
                 }
+            },
+            {
+                upsert: true
             }
-        },
-        {
-            upsert: true
-        }
         );
         
         return new SuccessResponse({

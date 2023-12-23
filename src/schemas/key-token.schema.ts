@@ -7,7 +7,7 @@ export type KeyTokenDocument = HydratedDocument<KeyToken>;
 
 @Schema({collection:'Keys'})
 export class KeyToken{
-    @Prop({required: true,type:mongoose.Schema.Types.ObjectId,ref:'Users'})
+    @Prop({required: true,index:true,type:mongoose.Schema.Types.ObjectId,ref:'Users'})
     user:User;
 
     @Prop({required: true})

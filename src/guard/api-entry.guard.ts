@@ -16,10 +16,15 @@ export class ApiEntryGuard implements CanActivate {
   
   canActivate(context: ExecutionContext,): Promise<boolean> | boolean | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
+    const isSameOrigin:boolean = request.headers['sec-fetch-site'] as string == "same-origin";
+    
+    if(isSameOrigin) return true;
+    
     const apiKey = request.headers['x-api-key']; 
     const allowUnauthorizedRequest = this.reflector.get<boolean>('allowUnauthorizedRequest', context.getHandler());
     if(allowUnauthorizedRequest) return true;
     if (!apiKey) return false;
+    
     return this.validateApiKey(apiKey,'GENERAL');
   }
 

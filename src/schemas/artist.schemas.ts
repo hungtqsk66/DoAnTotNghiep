@@ -1,15 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import {  HydratedDocument } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { Song } from 'src/schemas/songs.schemas';
-import { Album } from 'src/schemas/album.schemas';
+
 
 export type ArtistDocument = HydratedDocument<Artist>;
 
 @Schema({collection: 'Artists'})
 export class Artist {
     
-    @Prop({required: true,default:"Unknown"})
+    @Prop({required: true})
     artistName:string;
 
     @Prop({type:[mongoose.Schema.Types.ObjectId],ref:'Songs',default:[]})
@@ -19,7 +18,7 @@ export class Artist {
     singles:Object[]
 
     @Prop({type:[mongoose.Schema.Types.ObjectId],ref:'Albums',default:[]})
-    Albums:Object[]
+    albums:Object[]
 
     @Prop({required:true,default:"default.jpg"})
     coverArt:string

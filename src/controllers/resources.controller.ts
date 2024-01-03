@@ -10,8 +10,9 @@ export class ResourcesController {
 
     @AllowUnauthorizedRequest()
     @Get('audio/:fileName')
-    async getAudioFile(@Param('fileName') fileName:string,@Req() req:Request, @Res() res:Response){
-        return await this.resourceService.sendAudioFile(req,res,fileName);
+    async getAudioFile(@Param('fileName') fileName:string,@Req() req:Request, @Res() res:Response):Promise<void>
+    {
+        return await this.resourceService.StreamAudioFile(req,res,fileName);
     }
 
 }

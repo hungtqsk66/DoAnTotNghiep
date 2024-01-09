@@ -33,10 +33,7 @@ export class ResourcesService {
                 };
                 res.writeHead(206, header);
                 fileStream.pipe(res);
-                fileStream.on('end',()=>{
-                    console.log("Stream ended");
-                    fileStream.destroy();
-                });
+                fileStream.on('end',_=>fileStream.destroy());
             });
             
     }

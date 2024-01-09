@@ -166,8 +166,8 @@ export class UserPlaylistService implements IUserPlaylistService {
 
         if(!playList) throw new NotFoundException(`This playlist has'nt been created`);
         
-        playList.songs = playList.songs.filter(songId=>songId.toString() === songId);
-        
+        playList.songs = playList.songs.filter(_id=>_id.toString() !== songId);
+       
         await this.userPlaylistModel.findOneAndUpdate({user_id:new mongoose.Types.ObjectId(userId)},{playLists:playLists});
 
         return new SuccessResponse({message:`Removed song id: ${songId} to playlist : ${playList.playListName} successfully`});
